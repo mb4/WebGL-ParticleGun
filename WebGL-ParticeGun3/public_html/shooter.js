@@ -39,7 +39,7 @@ function canvasMain(canvasName)
   //add the particle system
   psys = new c3dl.ParticleSystem();
   //position it in the scene, in full view of the camera
-  psys.setPosition([0,5,-20]);
+  psys.setPosition([0,5,-30]);
   //set the initial range of velocities possible for each particle
   psys.setMinVelocity([-4,-4,-4]);
   psys.setMaxVelocity([-4,-4,-4]);
