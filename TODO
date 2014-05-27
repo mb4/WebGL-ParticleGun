@@ -1,0 +1,28 @@
+TEXTURING:
+-->TODO
+
+BLENDING:
+-->TODO
+
+FRAME BUFFER OBJECTS:
+-->TODO
+
+FACE CULLING:
+-->TODO
+
+DEPTH BUFFER:
+-->TODO
+
+LIGHTING:
+-->TODO
+
+PARTICLE SYSTEM:
+ParticleGun that emits particles at the top right corner of the canvas with an initial x-speed. Gravity is considered.
+TODO: improve particle concentration to make it look like a water jet
+
+PERSPECTIVE/ORTOGRAPHIC PROJECTION:
+-->TODO: enable perspective changing using mouse or keyboard
+-->TODO: enable orthographic projection
+
+TIME BASED ANIMATION/ INPUT/EVENT TRIGGERED ANIMATION:
+-->TODO
