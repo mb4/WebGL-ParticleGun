@@ -1,0 +1,58 @@
+html, body {
+  height:100%;
+  background-color: black;
+}
+
+/*
+* Basic Layout
+*/
+.content {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 255px; /*depends on footer height*/
+}
+.canvas {
+  width: 100%;
+  height: 100%;
+}
+.footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  background-color: #111;
+}
+.navigation {
+  display: block;
+  height: 100%;
+  margin: 0 auto;
+  background-color: #111;
+}
+
+/*
+* Navigation-Bar
+*/
+.navbar {
+	border: 0;
+	margin: 0;
+}
+.navbar,.navbar-header,.navbar-brand,.navbar-right,.nav.navbar-nav,.nav>li,.navbar-nav>li,.navbar-nav>li>a {
+  height: 100%;
+}
+.navbar-inverse {
+  background-color: #111;
+}
+.navbar-brand {
+  font-size: 28px;
+  line-height: 30px;
+}
+.navbar-inverse .navbar-brand {
+  color: #333;
+}
+.navbar-nav>li>a {
+  margin-left: 17px;
+}
+.droplet {
+  height: 40px;
+  width: auto;
+}

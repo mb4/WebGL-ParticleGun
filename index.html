@@ -1,11 +1,44 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <script src="J3DIMath.js" type="text/javascript"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <title>ParticleGun</title>
+
+    <!-- Bootstrap integration -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Basic CSS -->
+    <link href="css/particleGun.css" rel="stylesheet">
+    <link href="css/particleGun-responsive.css" rel="stylesheet">
+
+    <!-- not tested, only implemented !!!-->
+    <!-- crossbrowser-support addons -->
+    <!--[if lt IE 9]><script src="bootstrap/js/html5shiv.js"></script> <![endif]-->
+    <!--[if lte IE 8]><script src="bootstrap/js/respond.min.js"></script> <script src="bootstrap/js/excanvas.js"></script><![endif]-->
+    <!--[if lte IE 7]><script src="bootstrap/js/lte-ie7.js"></script><link href="bootstrap/css/bs-ie7.css" rel="stylesheet"><![endif]-->
+
     </head>
     <body>
-        <canvas id="gl_canvas" width="1000" height="800"></canvas>
+        <div class="content">
+              <canvas class="canvas" id="gl_canvas"></canvas>
+        </div>
+        <div class="footer" >
+          <div class="navigation">
+            <nav class="navbar navbar-inverse">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="#">ParticleGun</a>
+              </div>
+              <div class="navbar-right">
+                  <ul class="nav navbar-nav">
+                    <li id="water" class="active"><a href="javascript:alert('Water');"><img src="img/dropletWater.png" class="droplet"></a></li>
+                    <li id="oil"><a href="javascript:alert('Oil');"><img src="img/dropletOil.png" class="droplet"></a></li>
+                    <li id="lava"><a href="javascript:alert('Lava');"><img src="img/dropletLava.png" class="droplet"></a></li>
+                  </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+
         <script id="vertex_shader" type="x-shader/x-vertex">
             precision highp float;
             uniform mat4 modelViewProjection;
@@ -23,13 +56,13 @@
                 float t = u_time - startTime;
                 if (t >= 0.0) {
                     v_color = initialColor;
-                    
+
                     //position considering initial speed
                     v.xyz += t * velocity;
-                    
+
                     //y-position considering gravity
                     v.y -= 9.81 * t * t;
-                    
+
                     gl_PointSize = size;
                 } else {
                     v_color = vec4(0.0);
@@ -48,10 +81,11 @@
                 gl_FragColor = v_color;
             }
         </script>
-       
-        <!-- include the different graphical components (ParticleGun, Environment, etc.) -->
-        <script src="ParticleGun.js" type="text/javascript"></script>
-        <script src="Environment.js" type="text/javascript"></script>
-        
+
+        <!-- JavaScript includes -->
+        <!-- Libaries, graphical Components, ... -->
+        <script src="lib/J3DIMath.js" type="text/javascript"></script>
+        <script src="js/ParticleGun.js" type="text/javascript"></script>
+        <script src="js/Environment.js" type="text/javascript"></script>
     </body>
 </html>
