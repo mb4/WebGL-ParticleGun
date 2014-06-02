@@ -26,13 +26,13 @@
           <div class="navigation">
             <nav class="navbar navbar-inverse">
               <div class="navbar-header">
-                <a class="navbar-brand" href="#">ParticleGun</a>
+                <a class="navbar-brand" href="javascript:showCredits();">ParticleGun</a>
               </div>
               <div class="navbar-right">
                   <ul class="nav navbar-nav">
-                    <li id="water" class="active"><a href="javascript:alert('Water');"><img src="img/dropletWater.png" class="droplet"></a></li>
-                    <li id="oil"><a href="javascript:alert('Oil');"><img src="img/dropletOil.png" class="droplet"></a></li>
-                    <li id="lava"><a href="javascript:alert('Lava');"><img src="img/dropletLava.png" class="droplet"></a></li>
+                    <li id="water"><a href="javascript:toggleSubstance('water',1);"><img src="img/dropletWater.png" class="droplet"></a></li>
+                    <li id="oil"><a href="javascript:toggleSubstance('oil',2);"><img src="img/dropletOil.png" class="droplet"></a></li>
+                    <li id="lava"><a href="javascript:toggleSubstance('lava',3);"><img src="img/dropletLava.png" class="droplet"></a></li>
                   </ul>
               </div>
             </nav>
@@ -85,6 +85,7 @@
         <!-- JavaScript includes -->
         <!-- Libaries, graphical Components, ... -->
         <script src="lib/J3DIMath.js" type="text/javascript"></script>
+        <script src="js/Controller.js" type="text/javascript"></script>
         <script src="js/ParticleGun.js" type="text/javascript"></script>
         <script src="js/Environment.js" type="text/javascript"></script>
     </body>
