@@ -60,41 +60,6 @@
         return shader;
     };
 
-    var displayFunc = function ()
-    {
-        gl.clearColor(0.0, 0.0, 0.0, 0.0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        var mvMatrix = new J3DIMatrix4();
-        mvMatrix.translate(0, 1.5, -10);
-        mvMatrix.rotate(45, 1,1,0);
-        var mvpMatrix = new J3DIMatrix4();
-        mvpMatrix.load(projection);
-        mvpMatrix.multiply(mvMatrix);
-        gl.useProgram(shader.program);
-        mvpMatrix.setUniform(gl, shader.mvp, false);
-        gl.uniform1f(shader.time, time);
-        gl.enableVertexAttribArray(shader.vertex);
-        gl.enableVertexAttribArray(shader.color);
-        gl.enableVertexAttribArray(shader.velocity);
-        gl.enableVertexAttribArray(shader.startTime);
-        gl.enableVertexAttribArray(shader.size);
-        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.vertices);
-        gl.vertexAttribPointer(shader.vertex, 3, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.colors);
-        gl.vertexAttribPointer(shader.color, 4, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.velocities);
-        gl.vertexAttribPointer(shader.velocity, 3, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.startTimes);
-        gl.vertexAttribPointer(shader.startTime, 1, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.sizes);
-        gl.vertexAttribPointer(shader.size, 1, gl.FLOAT, false, 0, 0);
-        checkError("binding of buffers");
-        gl.drawArrays(gl.POINTS, 0, particleSystem.particles.length);
-
-        // render
-        checkError("render");
-    };
-
 
     var createTexture = function (url)
     {
@@ -141,10 +106,10 @@
         //particle.position = [Math.random(), Math.random(), Math.random()];
         particle.position = [3, Math.random()*0.5, Math.random()*0.5];
         //particle.velocity = [-Math.random(), -Math.random(), Math.random()];
-        particle.velocity = [-7, 0, 0];
+        particle.velocity = [-4, 4, 0];
         //particle.color = [Math.random(), Math.random(), Math.random(), Math.random()];
         particle.color = [0.37, 0.82, 0.90, Math.random()*0.25+0.75];
-        particle.startTime = Math.random() * 30 + 1;
+        particle.startTime = Math.random() * 30;
         //particle.size = Math.random()*15 + 1;
         particle.size = 3;
         return particle;
@@ -158,7 +123,7 @@
     var createParticleSystem = function ()
     {
         var particles = [];
-                        for (var i=0; i<1000000; i++) {
+                        for (var i=0; i<10000; i++) {
             particles.push(createParticle());
         }
         var vertices = [];
@@ -192,12 +157,104 @@
         particleSystem.sizes = createBuffer(sizes);
         return particleSystem;
     };
+    
+        var displayFunc = function ()
+    {
+        handleKeys();
+        gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        var mvMatrix = new J3DIMatrix4();
+        mvMatrix.translate(xPos, yPos, zPos);
+        mvMatrix.rotate(xAngle,1,0,0);
+        mvMatrix.rotate(yAngle,0,1,0);
+        var mvpMatrix = new J3DIMatrix4();
+        mvpMatrix.load(projection);
+        mvpMatrix.multiply(mvMatrix);
+        gl.useProgram(shader.program);
+        mvpMatrix.setUniform(gl, shader.mvp, false);
+        gl.uniform1f(shader.time, time);
+        gl.enableVertexAttribArray(shader.vertex);
+        gl.enableVertexAttribArray(shader.color);
+        gl.enableVertexAttribArray(shader.velocity);
+        gl.enableVertexAttribArray(shader.startTime);
+        gl.enableVertexAttribArray(shader.size);
+        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.vertices);
+        gl.vertexAttribPointer(shader.vertex, 3, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.colors);
+        gl.vertexAttribPointer(shader.color, 4, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.velocities);
+        gl.vertexAttribPointer(shader.velocity, 3, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.startTimes);
+        gl.vertexAttribPointer(shader.startTime, 1, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, particleSystem.sizes);
+        gl.vertexAttribPointer(shader.size, 1, gl.FLOAT, false, 0, 0);
+        checkError("binding of buffers");
+        gl.drawArrays(gl.POINTS, 0, particleSystem.particles.length);
+
+        // render
+        checkError("render");
+    };
+    
+
+//movement of camera in scene
+var currentlyPressedKeys = {};	//saves currently pressed keys
+var xAngle = 0; // rotation angle around x-axis
+var yAngle = 0; // rotation angle around y-axis
+var xPos = 0;	// position on the x-axis
+var yPos = 0;	// position on the y-axis
+var zPos = -30; // position on the z-axis
+
+function handleKeys() 
+{
+    if(currentlyPressedKeys[37] || currentlyPressedKeys[65]) 
+    {
+        // left arrow or "a"
+        yAngle -= 0.5;
+    }
+    else if(currentlyPressedKeys[39] || currentlyPressedKeys[68]) 
+    {
+        // right arrow or "d"
+        yAngle += 0.5;
+    } 
+    else if(currentlyPressedKeys[40] || currentlyPressedKeys[83]) 
+    {	
+        // arrow down or "s"
+        xAngle -= 0.5;
+    }
+    else if(currentlyPressedKeys[38] || currentlyPressedKeys[87]) 
+    {
+        // arrow up or "w"
+        xAngle += 0.5;
+    }
+    else if(currentlyPressedKeys[171])
+    {
+        // "+" key
+        zPos += 0.1;
+    }
+    else if(currentlyPressedKeys[173])
+    {
+        // "-" key
+        zPos -= 0.1;
+    }
+}
+
+document.onkeydown = handleKeyDown;
+document.onkeyup = handleKeyUp;
+
+function handleKeyDown(event) 
+{
+	currentlyPressedKeys[event.keyCode] = true;
+}
+
+function handleKeyUp(event) 
+{
+	currentlyPressedKeys[event.keyCode] = false;
+}
 
     // create shader
     var shader = createParticleSystemShader();
     var particleSystem = createParticleSystem();
     var projection = new J3DIMatrix4();
-    //projection.perspective(30, 3.0, 1, 10000);
     projection.perspective(30, 1, 1, 10000);
     var time = 0.0;
     gl.enable(gl.BLEND);

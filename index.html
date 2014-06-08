@@ -61,7 +61,7 @@
                     v.xyz += t * velocity;
 
                     //y-position considering gravity
-                    v.y -= 9.81 * t * t;
+                    v.y -= 0.5 * 9.81 * t * t;
 
                     gl_PointSize = size;
                 } else {
