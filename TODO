@@ -17,11 +17,12 @@ LIGHTING:
 -->TODO
 
 PARTICLE SYSTEM:
-ParticleGun that emits particles at the top right corner of the canvas with an initial x-speed. Gravity is considered.
+DONE (Marvin): ParticleGun that emits particles at the top right corner of the canvas with an initial x- and y-speed. Gravity is considered.
 TODO: improve particle concentration to make it look like a water jet
+TODO: enable switching to oil and java as emitted material
 
 PERSPECTIVE/ORTOGRAPHIC PROJECTION:
--->TODO: enable perspective changing using mouse or keyboard
+-->DONE (Marvin): enable perspective changing using keyboard 
 -->TODO: enable orthographic projection
 
 TIME BASED ANIMATION/ INPUT/EVENT TRIGGERED ANIMATION:
