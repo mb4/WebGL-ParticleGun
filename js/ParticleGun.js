@@ -1,5 +1,6 @@
     var canvas = document.getElementById("gl_canvas");
     var gl = canvas.getContext("experimental-webgl");
+    var testBeschleunigung = [-8,2,0];
     var checkError = function (message) {
         var error = gl.getError();
         while (error != gl.NO_ERROR) {
@@ -257,10 +258,16 @@ function handleKeyUp(event)
     var projection = new J3DIMatrix4();
     projection.perspective(30, 1, 1, 10000);
     var time = 0.0;
+    var firstTime = false;
     gl.enable(gl.BLEND);
     displayFunc();
 
     setInterval(function () {
         time += 16/1000;
+        if(time>0.0 && firstTime==false){
+        	firstTime = true;
+        	//alert("Hallo");
+        	testBeschleunigung = [-1,-6,0];
+        }
         displayFunc();
      }, 16);
