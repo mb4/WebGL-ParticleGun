@@ -107,7 +107,7 @@
         //particle.position = [Math.random(), Math.random(), Math.random()];
         particle.position = [3, Math.random()*0.5, Math.random()*0.5];
         //particle.velocity = [-Math.random(), -Math.random(), Math.random()];
-        particle.velocity = [-4, 4, 0];
+        particle.velocity = testBeschleunigung;//[-4, 4, 0];
         //particle.color = [Math.random(), Math.random(), Math.random(), Math.random()];
         particle.color = [0.37, 0.82, 0.90, Math.random()*0.25+0.75];
         particle.startTime = Math.random() * 30;
@@ -124,7 +124,8 @@
     var createParticleSystem = function ()
     {
         var particles = [];
-                        for (var i=0; i<10000; i++) {
+        for (var i=0; i<100; i++) {
+        	//hier werden die Partikel initialisiert
             particles.push(createParticle());
         }
         var vertices = [];
@@ -254,6 +255,8 @@ function handleKeyUp(event)
 
     // create shader
     var shader = createParticleSystemShader();
+    
+    //hier wird das Partikelsystem initialisiert
     var particleSystem = createParticleSystem();
     var projection = new J3DIMatrix4();
     projection.perspective(30, 1, 1, 10000);
@@ -264,10 +267,11 @@ function handleKeyUp(event)
 
     setInterval(function () {
         time += 16/1000;
-        if(time>0.0 && firstTime==false){
+        if(time>1.0 && firstTime==false){
         	firstTime = true;
-        	//alert("Hallo");
+        	alert("Hallo");
         	testBeschleunigung = [-1,-6,0];
+        	particleSystem = createParticleSystem();
         }
         displayFunc();
      }, 16);
