@@ -1,6 +1,12 @@
     var canvas = document.getElementById("gl_canvas");
     var gl = canvas.getContext("experimental-webgl");
-    var testBeschleunigung = [-8,2,0];
+    var energie = 5.65685;
+    var winkel = 45
+    var setBeschleunigung = [-(energie*Math.sin(winkel/360*2*3.1415926536)),energie*Math.sin(winkel/360*2*3.1415926536),0];
+    //alert(-(energie*Math.sin(45/360*2*3.1415926536)));
+    var setColor = [0,1,1,1];		//Standartwert = blau
+    var time = 0.0;
+    var particleCounter = 0;
     var checkError = function (message) {
         var error = gl.getError();
         while (error != gl.NO_ERROR) {
@@ -107,10 +113,10 @@
         //particle.position = [Math.random(), Math.random(), Math.random()];
         particle.position = [3, Math.random()*0.5, Math.random()*0.5];
         //particle.velocity = [-Math.random(), -Math.random(), Math.random()];
-        particle.velocity = testBeschleunigung;//[-4, 4, 0];
+        particle.velocity = setBeschleunigung;//[-4, 4, 0];
         //particle.color = [Math.random(), Math.random(), Math.random(), Math.random()];
-        particle.color = [0.37, 0.82, 0.90, Math.random()*0.25+0.75];
-        particle.startTime = Math.random() * 30;
+        particle.color = setColor;//[0.37, 0.82, 0.90, Math.random()*0.25+0.75];
+        particle.startTime = -1;//Math.random() * 30;
         //particle.size = Math.random()*15 + 1;
         particle.size = 3;
         return particle;
@@ -124,10 +130,10 @@
     var createParticleSystem = function ()
     {
         var particles = [];
-        for (var i=0; i<100; i++) {
+        //for (var i=0; i<100; i++) {
         	//hier werden die Partikel initialisiert
             particles.push(createParticle());
-        }
+        //}
         var vertices = [];
         var velocities = [];
         var colors = [];
@@ -146,7 +152,7 @@
             colors.push(particle.color[1]);
             colors.push(particle.color[2]);
             colors.push(particle.color[3]);
-            startTimes.push(particle.startTime);
+            (i==particleCounter)?startTimes.push(time+1.0):startTimes.push(particle.startTime);
             sizes.push(particle.size);
         }
 
@@ -238,6 +244,41 @@ function handleKeys()
         // "-" key
         zPos -= 0.1;
     }
+    else if(currentlyPressedKeys[73]){
+    	//i pressed -->  nach oben
+    	winkel = (winkel+5<90)?winkel+5:winkel;
+    	console.log(winkel);
+    }
+    else if(currentlyPressedKeys[75]){
+    	//k pressed --> nach unten
+    	winkel = (winkel-5>0)?winkel-5:winkel;
+    	console.log(winkel);
+    }
+    else if(currentlyPressedKeys[32]){
+    	//backspace --> fire!!!
+    	setBeschleunigung = [-(energie*Math.cos(winkel/360*2*3.1415926536)),energie*Math.sin((winkel/360)*2*3.1415926536),0];
+    	console.log(setBeschleunigung);
+    	var time = 0.0;
+   	   	particleSystem = createParticleSystem();
+    }
+    else if(currentlyPressedKeys[49]){
+    	// Taste "1"
+    	//Beta um Partikel blau werden zu lassen
+    	setColor = [0,1,1,1];
+    	energie = 5.65685
+    }
+    else if(currentlyPressedKeys[50]){
+    	// Taste "2"
+    	//Beta um Partikel grün werden zu lassen
+    	setColor = [0,1,0,1];
+    	energie = 1.65685
+    }
+    else if(currentlyPressedKeys[51]){
+    	// Taste "3"
+    	//Beta um Partikel rot werden zu lassen
+    	setColor = [1,0,0,1];
+    	energie = 8.65685
+    }
 }
 
 document.onkeydown = handleKeyDown;
@@ -260,18 +301,10 @@ function handleKeyUp(event)
     var particleSystem = createParticleSystem();
     var projection = new J3DIMatrix4();
     projection.perspective(30, 1, 1, 10000);
-    var time = 0.0;
-    var firstTime = false;
     gl.enable(gl.BLEND);
     displayFunc();
-
+	
     setInterval(function () {
         time += 16/1000;
-        if(time>1.0 && firstTime==false){
-        	firstTime = true;
-        	alert("Hallo");
-        	testBeschleunigung = [-1,-6,0];
-        	particleSystem = createParticleSystem();
-        }
         displayFunc();
      }, 16);
