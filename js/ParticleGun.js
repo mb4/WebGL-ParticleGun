@@ -1,10 +1,9 @@
     var canvas = document.getElementById("gl_canvas");
     var gl = canvas.getContext("experimental-webgl");
-    var energie = 5.65685;
-    var winkel = 45
+    var energie = 5.65685;	//Energie für "Blau".
+    var winkel = 45; //Standardwinkel.
     var setBeschleunigung = [-(energie*Math.sin(winkel/360*2*3.1415926536)),energie*Math.sin(winkel/360*2*3.1415926536),0];
-    //alert(-(energie*Math.sin(45/360*2*3.1415926536)));
-    var setColor = [0,1,1,1];		//Standartwert = blau
+    var setColor = [0,1,1,1];		//Standardwert = blau
     var time = 0.0;
     var particleCounter = 0;
     var checkError = function (message) {
@@ -110,14 +109,10 @@
     var createParticle = function ()
     {
         var particle = {};
-        //particle.position = [Math.random(), Math.random(), Math.random()];
-        particle.position = [3, Math.random()*0.5, Math.random()*0.5];
-        //particle.velocity = [-Math.random(), -Math.random(), Math.random()];
+        particle.position = [3,0,0];//[3, Math.random()*0.5, Math.random()*0.5];
         particle.velocity = setBeschleunigung;//[-4, 4, 0];
-        //particle.color = [Math.random(), Math.random(), Math.random(), Math.random()];
         particle.color = setColor;//[0.37, 0.82, 0.90, Math.random()*0.25+0.75];
-        particle.startTime = -1;//Math.random() * 30;
-        //particle.size = Math.random()*15 + 1;
+        particle.startTime = -1;
         particle.size = 3;
         return particle;
     };
@@ -152,7 +147,7 @@
             colors.push(particle.color[1]);
             colors.push(particle.color[2]);
             colors.push(particle.color[3]);
-            (i==particleCounter)?startTimes.push(time+1.0):startTimes.push(particle.startTime);
+            (i==particleCounter)?startTimes.push(time):startTimes.push(particle.startTime);		//keine Ahnung wieso, aber funktioniert so.
             sizes.push(particle.size);
         }
 
