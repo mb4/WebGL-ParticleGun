@@ -54,7 +54,7 @@ window.onkeypress = function(e) {
     }
     else if(key == 32)//KEY: "space"
     {
-      setBeschleunigung = [-(energie*Math.cos(winkel/360*2*3.1415926536)),energie*Math.sin((winkel/360)*2*3.1415926536),0];
+      setBeschleunigung = [-(energy*Math.cos(gunAngle/360*2*3.1415926536)),energy*Math.sin((gunAngle/360)*2*3.1415926536),0];
       console.log(setBeschleunigung);
       //particleSystem = createParticleSystem();
     }
@@ -70,16 +70,16 @@ window.onkeyup = function(e) {
    if (key == 49)//KEY: "1"
    {
 	   toggleSubstance('water',1);
-	   energie = 5.65685;
+	   energy = 5.65685;
    }
    else if (key == 50)//KEY: "2"
    {
 	   toggleSubstance('oil',2);
-	   energie = 1.65685;
+	   energy = 1.65685;
    }
    else if (key == 51)//KEY: "3"
    {
 	   toggleSubstance('lava',3);
-	   energie = 8.65685;
+	   energy = 8.65685;
    }
 };

@@ -28,7 +28,7 @@ var zPos = -30; // position on the z-axis
 
 var energy = 5.65685; //default is the energy for water
 var gunAngle = 45; //default is 45 degree.
-var setBeschleunigung = [-(energie*Math.sin(winkel/360*2*3.1415926536)),energie*Math.sin(winkel/360*2*3.1415926536),0];
+var setBeschleunigung = [-(energy*Math.sin(gunAngle/360*2*3.1415926536)),energy*Math.sin(gunAngle/360*2*3.1415926536),0];
 
 var time = 0.0;
 var particleCounter = 0;
