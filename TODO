@@ -1,5 +1,5 @@
 TEXTURING:
--->TODO
+DONE (Marcel): only 2D textures on a cube not on a droplet
 
 BLENDING:
 -->TODO
@@ -11,18 +11,27 @@ FACE CULLING:
 -->TODO
 
 DEPTH BUFFER:
--->TODO
+MAYBE DONE (Marcel): i don't exactly know if it is already implemented due the lightnin
 
-LIGHTING:
--->TODO
+LIGHTNING:
+DONE (Marcel): only surrounding light and directed light no pointed light
 
 PARTICLE SYSTEM:
-ParticleGun that emits particles at the top right corner of the canvas with an initial x-speed. Gravity is considered.
+TODO: refactor to the new structure
+
+DONE (Marvin): ParticleGun that emits particles at the top right corner of the canvas with an initial x- and y-speed. Gravity is considered.
 TODO: improve particle concentration to make it look like a water jet
+TODO: enable switching to oil and java as emitted material
 
 PERSPECTIVE/ORTOGRAPHIC PROJECTION:
--->TODO: enable perspective changing using mouse or keyboard
+TODO: refactor to the new structure
+
+-->DONE (Marvin): enable perspective changing using keyboard
 -->TODO: enable orthographic projection
 
 TIME BASED ANIMATION/ INPUT/EVENT TRIGGERED ANIMATION:
--->TODO
+DONE (Marcel): Controls at the downer screen and over keys 1, 2, 3
+
+#####
+ERRORS:
+-Particle dissapears of a new one is fired...
