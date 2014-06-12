@@ -42,12 +42,12 @@ window.onkeypress = function(e) {
         // "-" key
         zPos -= 0.1;
     }
-    else if(key == 73)//KEY: ???
+    else if(key == 73)//KEY: "i"
     {
       winkel = (winkel+5<90)?winkel+5:winkel;
       console.log(winkel);
     }
-    else if(key == 75)//KEY: ???
+    else if(key == 75)//KEY: "k"
     {
       winkel = (winkel-5>0)?winkel-5:winkel;
       console.log(winkel);
