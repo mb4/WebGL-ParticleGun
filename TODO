@@ -17,14 +17,13 @@ LIGHTNING:
 DONE (Marcel): only surrounding light and directed light no pointed light
 
 PARTICLE SYSTEM:
-TODO: refactor to the new structure
-
 DONE (Marvin): ParticleGun that emits particles at the top right corner of the canvas with an initial x- and y-speed. Gravity is considered.
+DONE (Marvin): add physics to realize correct particle behavior
 TODO: improve particle concentration to make it look like a water jet
-TODO: enable switching to oil and java as emitted material
+DONE (Marcel): enable switching to oil and java as emitted material
 
 PERSPECTIVE/ORTOGRAPHIC PROJECTION:
-TODO: refactor to the new structure
+DONE (Marvin): refactor to the new structure
 
 -->DONE (Marvin): enable perspective changing using keyboard
 -->TODO: enable orthographic projection
