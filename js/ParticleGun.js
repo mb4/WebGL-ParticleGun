@@ -15,6 +15,7 @@ var lastTime = 0;
 
 var tilt = 90;
 var spin = 0;
+var testTime = 0;
 
 var zoom = -15;
 var gunAngle = 45; //0=45°down 90=45°up
@@ -233,18 +234,23 @@ function Particle(textureId) {
 	this.lifetime = 5000; //in milliseconds
 }
 
-Particle.prototype.draw = function(tilt, spin, twinkle) {
+var counter = 0;
+Particle.prototype.draw = function(tilt, spin, twinkle, time) {
 	mvPushMatrix();
 
 	// Move to the particle's position
 	mat4.translate(mvMatrix, [ 10, 0.0, 0.0 ]);
 	mat4.rotate(mvMatrix, degToRad(this.angle), [ 0.0, 1.0, 0.0 ]);
 	mat4.translate(mvMatrix, [ this.dist, 0.0, 0.0 ]);
-
 	// Rotate back so that the particle is facing the viewer
 	mat4.rotate(mvMatrix, degToRad(-this.angle), [ 0.0, 1.0, 0.0 ]);
 	mat4.rotate(mvMatrix, degToRad(-tilt), [ 1.0, 0.0, 0.0 ]);
 
+	if (counter<50){
+		console.log(-(0.5*9,81*time*time));
+		counter++;
+	}
+	
 	if (twinkle) {
 		// Draw a non-rotating particle in the alternate "twinkling" color
 		gl.uniform3f(shaderProgram.colorUniform, this.twinkleR, this.twinkleG,
@@ -254,7 +260,6 @@ Particle.prototype.draw = function(tilt, spin, twinkle) {
 
 	// All particles spin around the his Z axis at the same rate
 	mat4.rotate(mvMatrix, degToRad(spin), [ 0.0, 0.0, 1.0 ]);
-
 	// Draw the particle in its main color
 	//gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
 	drawParticle(this.textureId);
@@ -264,7 +269,6 @@ Particle.prototype.draw = function(tilt, spin, twinkle) {
 
 var effectiveFPMS = 60 / 1000;
 Particle.prototype.animate = function(elapsedTime) {
-
 	this.dist -= this.acceleration * effectiveFPMS * elapsedTime; //##################################### <----
 
 	//delete particle if life is bigger than the lifetime
@@ -298,8 +302,10 @@ function drawScene() {
 
 	var twinkle = 0;
 	for ( var i in particles) {
-		particles[i].draw(tilt, spin, twinkle);
+		particles[i].draw(tilt, spin, twinkle, testTime);
+		testTime += 1;
 		spin += 0.1;
+		
 	}
 }
 
