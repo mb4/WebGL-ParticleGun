@@ -16,22 +16,31 @@ window.onkeypress = function(e) {
 	//console.log("Press:"+key);
 
 	//NOTE: arrows not working !? (Marcel)
+        
 
-	if(key == 97 || key ==65)//KEY: "a" or "left arrow"
+    if(key ==37)//KEY: "left arrow"
     {
-		tilt += 0.5;
+	pan -= 0.5;
     }
-    else if(key == 100 || key ==68)//KEY: "d" or "right arrow"
+    else if(key ==39)//KEY: "right arrow"
+    {
+    	pan += 0.5;
+    }
+     else if(key == 38)//KEY:"arrow up"
+    {
+    	tilt += 0.5;
+    }
+    else if(key == 40)//KEY: "arrow down"
     {
     	tilt -= 0.5;
     }
-    else if(key == 115 || key ==40)//KEY: "s" or "arrow down"
+    else if(key == 119) //KEY: "w"
     {
-    	gunAngle = (gunAngle+1>90)?gunAngle:gunAngle+1;
+        gunAngle = (gunAngle+1>90)?gunAngle:gunAngle+1;
     }
-    else if(key == 119 || key ==38)//KEY: "w" or "arrow up"
+    else if(key == 115) //KEY: "s"
     {
-    	gunAngle = (gunAngle-1<0)?gunAngle:gunAngle-1;
+        gunAngle = (gunAngle-1<0)?gunAngle:gunAngle-1;
     }
     else if(key == 43)//KEY: "+"
     {

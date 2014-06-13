@@ -1,5 +1,4 @@
 var gl;
-
 var shaderProgram;
 
 var particleTextures = [];
@@ -9,21 +8,23 @@ var mvMatrixStack = [];
 var pMatrix = mat4.create();
 var particleVertexPositionBuffer;
 var particleVertexTextureCoordBuffer;
-
 var particles = [];
 var lastTime = 0;
 
-var tilt = 90;
+//pan, tilt rotation and zoom
+var tilt = 0;
+var pan = 0;
+var zoom = -20;
+
+//gun and particle data
 var spin = 0;
 var testTime = 0;
+var gunAngle = 45;
 
-var zoom = -15;
-var gunAngle = 45; //0=45°down 90=45°up
-
+//data about emitted materials
 var materials = ["Water","Oil","Lava"];
-var materialEnergys = [0.2,0.125,0.05];
+var materialVelocities = [16000,12500,5000];
 var currentlyEmittingMaterial = 0; //water is preselected
-
 
 function initGL(canvas) {
 	try {
@@ -128,25 +129,6 @@ function handleLoadedTextures(/*samplerNumber*/) {
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 	gl.uniform1i(shaderProgram.uSampler2, 0);
-
-	/*
-	 * is not working with code reducing methods
-	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-	gl.activeTexture(gl.TEXTURE0 + samplerNumber);
-	gl.bindTexture(gl.TEXTURE_2D, particleTextures[samplerNumber]);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,particleTextures[samplerNumber].image);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
-	switch (samplerNumber){
-	case 0:
-		gl.uniform1i(shaderProgram.uSampler, 0);
-	case 1:
-		gl.uniform1i(shaderProgram.uSampler1, 0);
-	case 2:
-		gl.uniform1i(shaderProgram.uSampler2, 0);
-	}
-	*/
 }
 
 /**
@@ -205,6 +187,26 @@ function initBuffers() {
 	particleVertexTextureCoordBuffer.numItems = 4;
 }
 
+/**
+ * initialize a single particle
+ */
+function Particle(textureId) {
+	this.textureId = textureId;
+
+        //calculate X and Y components of initial velocity considering gunAngle
+	this.xVelocity = materialVelocities[textureId] * Math.cos(degToRad(gunAngle));
+        this.yVelocity = materialVelocities[textureId] * Math.sin(degToRad(gunAngle));
+
+	this.xPos = 0; //xPos (Distance from Emitter)
+        this.yPos = 0; //yPos (Distance from Emitter)
+
+        this.inittime = new Date().getTime(); //Time Particle was emitted
+	this.lifetime = 5000; //in milliseconds
+}
+
+/**
+ * draws a single particle
+ */
 function drawParticle(textureId) {
 	gl.activeTexture(gl.TEXTURE0);
 	gl.bindTexture(gl.TEXTURE_2D, particleTextures[textureId]);
@@ -222,34 +224,18 @@ function drawParticle(textureId) {
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, particleVertexPositionBuffer.numItems);
 }
 
-function Particle(textureId) {
-	this.textureId = textureId;
-
-	this.acceleration = materialEnergys[textureId];
-	this.angle = gunAngle-45;//angle of the current particle
-
-	this.dist = 0; //distance from center
-
-	this.life = 0; //current life in milliseconds
-	this.lifetime = 5000; //in milliseconds
-}
-
-var counter = 0;
-Particle.prototype.draw = function(tilt, spin, twinkle, time) {
+/**
+ * prepares to draw a single particle
+ */
+Particle.prototype.draw = function(pan, tilt, spin, twinkle, time) {
 	mvPushMatrix();
 
-	// Move to the particle's position
-	mat4.translate(mvMatrix, [ 10, 0.0, 0.0 ]);
-	mat4.rotate(mvMatrix, degToRad(this.angle), [ 0.0, 1.0, 0.0 ]);
-	mat4.translate(mvMatrix, [ this.dist, 0.0, 0.0 ]);
-	// Rotate back so that the particle is facing the viewer
-	mat4.rotate(mvMatrix, degToRad(-this.angle), [ 0.0, 1.0, 0.0 ]);
+	//Move to the particle's position
+	mat4.translate(mvMatrix, [ 15, 0.0, -5.0 ]);
+	mat4.translate(mvMatrix, [this.xPos,this.yPos,0.0]);
+	//Rotate against the main rotation of the view so that the particle is facing the viewer
 	mat4.rotate(mvMatrix, degToRad(-tilt), [ 1.0, 0.0, 0.0 ]);
-
-	if (counter<50){
-		console.log(-(0.5*9,81*time*time));
-		counter++;
-	}
+        mat4.rotate(mvMatrix, degToRad(pan), [ 0.0, 1.0, 0.0 ]);
 	
 	if (twinkle) {
 		// Draw a non-rotating particle in the alternate "twinkling" color
@@ -258,34 +244,46 @@ Particle.prototype.draw = function(tilt, spin, twinkle, time) {
 		drawParticle(this.textureId);
 	}
 
-	// All particles spin around the his Z axis at the same rate
+	//particles spin around his Z-axis at the same rate
 	mat4.rotate(mvMatrix, degToRad(spin), [ 0.0, 0.0, 1.0 ]);
-	// Draw the particle in its main color
-	//gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
+        
+	//Draw the particle in its main color
+	gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
 	drawParticle(this.textureId);
 
 	mvPopMatrix();
 };
 
-var effectiveFPMS = 60 / 1000;
-Particle.prototype.animate = function(elapsedTime) {
-	this.dist -= this.acceleration * effectiveFPMS * elapsedTime; //##################################### <----
+/**
+ * determines current position for a single particle
+ * taking into account the initial velocity as well as gravity
+ */
+Particle.prototype.animate = function() {
+        var timeSinceEmitted = new Date().getTime() - this.inittime;
+        
+        //calculate x- and y- component of current position
+        //for a better animation both position components are equally devided by 1.000.000 (no influence on physical correctness)
+        this.xPos = -(this.xVelocity*timeSinceEmitted)/1000000;
+        this.yPos = (-0.5*9.81*timeSinceEmitted*timeSinceEmitted + this.yVelocity*timeSinceEmitted)/1000000;
 
-	//delete particle if life is bigger than the lifetime
-	//console.log(particles.length);//count of current lifing particles
-	this.life += elapsedTime;
-	if (this.life > this.lifetime) {
+	//delete particle if timeSinceEmitted is bigger than the lifetime
+	if (timeSinceEmitted > this.lifetime) {
 		particles.shift();
 	}
 };
 
-var emitter = window.setInterval("emitParticle()", 50);
+/**
+ * emitts a single particle
+ */
 function emitParticle() {
 	if (currentlyEmittingMaterial != -1){
 		particles.push(new Particle(currentlyEmittingMaterial));
 	}
 }
 
+/**
+ * draws the entire scene
+ */
 function drawScene() {
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -299,26 +297,23 @@ function drawScene() {
 	mat4.identity(mvMatrix);
 	mat4.translate(mvMatrix, [ 0.0, 0.0, zoom ]);
 	mat4.rotate(mvMatrix, degToRad(tilt), [ 1.0, 0.0, 0.0 ]);
-
+        mat4.rotate(mvMatrix, degToRad(-pan), [ 0.0, 1.0, 0.0 ]);
+        
 	var twinkle = 0;
 	for ( var i in particles) {
-		particles[i].draw(tilt, spin, twinkle, testTime);
+		particles[i].draw(pan, tilt, spin, twinkle, testTime);
 		testTime += 1;
 		spin += 0.1;
-		
 	}
 }
 
+/**
+ * animates all current particles
+ */
 function animate() {
-	var timeNow = new Date().getTime();
-	if (lastTime != 0) {
-		var elapsed = timeNow - lastTime;
-
-		for ( var i in particles) {
-			particles[i].animate(elapsed);
-		}
-	}
-	lastTime = timeNow;
+        for ( var i in particles) {
+                particles[i].animate();
+        }
 }
 
 function tick() {
@@ -339,3 +334,6 @@ function start() {
 
 	tick();
 }
+
+//set intervall for constant emission of new particles
+var emitter = window.setInterval("emitParticle()", 50);
