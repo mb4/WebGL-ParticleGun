@@ -237,6 +237,7 @@ Particle.prototype.draw = function(tilt, spin, twinkle) {
 	mvPushMatrix();
 
 	// Move to the particle's position
+	mat4.translate(mvMatrix, [ 10, 0.0, 0.0 ]);
 	mat4.rotate(mvMatrix, degToRad(this.angle), [ 0.0, 1.0, 0.0 ]);
 	mat4.translate(mvMatrix, [ this.dist, 0.0, 0.0 ]);
 
