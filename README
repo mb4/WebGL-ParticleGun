@@ -1,0 +1,7 @@
+The project can be run simply by opening the index.html file in a regular webbrowser (supported is: Mozilla Firefox). To access the project using a webserver is not necessary, but we recommend it in case of any problems.
+
+Assignment of keys:
+1/2/3 : selection of material
++/-   : zoom
+w/s   : control of gun angle
+arrow keys: control of view angle
